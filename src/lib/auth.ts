@@ -2,6 +2,11 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/db";
 
+// 检查必需的环境变量
+if (!process.env.NEXTAUTH_SECRET) {
+  console.warn('⚠️ NEXTAUTH_SECRET 未配置，请设置环境变量')
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({

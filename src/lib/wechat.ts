@@ -1,5 +1,10 @@
 // 微信登录配置和工具函数
 
+// 检查微信配置
+if (!process.env.WECHAT_APPID || !process.env.WECHAT_SECRET) {
+  console.warn('⚠️ 微信登录未配置，请设置 WECHAT_APPID 和 WECHAT_SECRET 环境变量')
+}
+
 interface WeChatLoginResponse {
   openid: string;
   session_key: string;
