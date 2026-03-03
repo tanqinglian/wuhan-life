@@ -1,12 +1,13 @@
-// 武汉生活 - 数据库模型（SQLite兼容）
+// 武汉生活 - 数据库模型（PostgreSQL）
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // 区域表
@@ -23,7 +24,7 @@ model Market {
   id          Int       @id @default(autoincrement())
   name        String
   districtId  Int
-  district    District  @relation(fields: [districtId], references: [id])
+  district    District  @relation(fields: [districtId], references: [id], onDelete: Cascade)
   address     String
   description String?
   openHours   String?   // 营业时间，如 "18:00-02:00"
