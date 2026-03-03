@@ -1,157 +1,114 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 
-// 夜市数据（MVP 阶段使用静态数据）
-const markets = [
-  {
-    id: 1,
-    name: "万松园夜市",
-    district: "江汉区",
-    address: "江汉区万松园路",
-    description: "武汉最火的夜市之一，小吃种类丰富，人流量大",
-    openHours: "18:00-02:00",
-    rating: 4.8,
-    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400",
-    tags: ["烧烤", "小龙虾", "甜品"],
-  },
-  {
-    id: 2,
-    name: "雪松路夜市",
-    district: "江汉区",
-    address: "江汉区雪松路",
-    description: "本地人最爱的夜市，价格实惠，味道正宗",
-    openHours: "17:30-01:30",
-    rating: 4.6,
-    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
-    tags: ["热干面", "豆皮", "汤包"],
-  },
-  {
-    id: 3,
-    name: "粮道街夜市",
-    district: "武昌区",
-    address: "武昌区粮道街",
-    description: "老武汉的味道，传统小吃聚集地",
-    openHours: "18:00-00:00",
-    rating: 4.7,
-    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400",
-    tags: ["面窝", "糊汤粉", "烧麦"],
-  },
-  {
-    id: 4,
-    name: "光谷步行街夜市",
-    district: "洪山区",
-    address: "洪山区光谷步行街",
-    description: "年轻人的聚集地，网红小吃多",
-    openHours: "18:00-02:00",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=400",
-    tags: ["奶茶", "炸鸡", "网红小吃"],
-  },
-  {
-    id: 5,
-    name: "钟家村夜市",
-    district: "汉阳区",
-    address: "汉阳区钟家村",
-    description: "汉阳最大的夜市，品类齐全",
-    openHours: "17:00-01:00",
-    rating: 4.4,
-    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400",
-    tags: ["烧烤", "串串", "冰粉"],
-  },
-  {
-    id: 6,
-    name: "司门口夜市",
-    district: "武昌区",
-    address: "武昌区司门口",
-    description: "黄鹤楼脚下的老夜市，游客必打卡",
-    openHours: "18:00-23:30",
-    rating: 4.3,
-    image: "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=400",
-    tags: ["臭豆腐", "烤冷面", "糖葫芦"],
-  },
-];
+export default async function MarketsPage() {
+  // 获取所有夜市数据（示例数据）
+  const districts = await prisma.district.findMany({
+    include: {
+      markets: {
+        where: { isActive: true },
+        orderBy: { rating: "desc" },
+      },
+    },
+    orderBy: { order: "asc" },
+  });
 
-const districts = ["全部", "江汉区", "武昌区", "洪山区", "汉阳区", "硚口区"];
-
-export default function MarketsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">夜市探索</h1>
-          <p className="text-white/90">发现武汉最地道的夜市美食</p>
+      {/* 头部 */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+            ← 返回首页
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-900 mt-2">
+            🍢 武汉夜市探索
+          </h1>
+          <p className="text-gray-600 text-sm mt-1">
+            发现江城最美夜市，品尝地道美食
+          </p>
         </div>
-      </div>
+      </header>
 
-      {/* Filters */}
-      <div className="bg-white border-b sticky top-14 z-40">
+      {/* 筛选栏 */}
+      <div className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-3">
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {districts.map((district) => (
-              <button
-                key={district}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                  district === "全部"
-                    ? "bg-orange-500 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {district}
-              </button>
-            ))}
+          <div className="flex gap-2 overflow-x-auto">
+            <button className="px-4 py-2 bg-orange-500 text-white rounded-full text-sm font-medium whitespace-nowrap">
+              全部
+            </button>
+            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200">
+              江汉区
+            </button>
+            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200">
+              武昌区
+            </button>
+            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200">
+              汉阳区
+            </button>
+            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200">
+              洪山区
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Market Grid */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {markets.map((market) => (
-            <Link
-              key={market.id}
-              href={`/markets/${market.id}`}
-              className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group"
-            >
-              <div className="aspect-[4/3] relative overflow-hidden">
-                <img
-                  src={market.image}
-                  alt={market.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                  <span className="text-amber-500">★</span>
-                  {market.rating}
-                </div>
+      {/* 夜市列表 */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        {districts.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-500 text-lg">暂无夜市数据</p>
+            <p className="text-gray-400 text-sm mt-2">
+              请先配置数据库并添加数据
+            </p>
+          </div>
+        ) : (
+          districts.map((district) => (
+            <div key={district.id} className="mb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                {district.name}
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {district.markets.map((market) => (
+                  <Link
+                    key={market.id}
+                    href={`/markets/${market.id}`}
+                    className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="aspect-video bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                      <span className="text-4xl">🌃</span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-gray-900 mb-1">
+                        {market.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                        {market.description || "暂无描述"}
+                      </p>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-1">
+                          <span className="text-orange-500">★</span>
+                          <span className="font-medium">{market.rating.toFixed(1)}</span>
+                        </div>
+                        <span className="text-gray-400">
+                          {market.openHours || "营业时间待定"}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-bold text-gray-900">{market.name}</h3>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                    {market.district}
-                  </span>
-                </div>
-                <p className="text-gray-500 text-sm mb-3 line-clamp-2">
-                  {market.description}
-                </p>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">{market.openHours}</span>
-                  <div className="flex gap-1">
-                    {market.tags.slice(0, 2).map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+            </div>
+          ))
+        )}
+      </main>
+
+      {/* 底部 */}
+      <footer className="bg-gray-900 text-white py-8 mt-12">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <p>&copy; 2026 武汉生活. All rights reserved.</p>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
