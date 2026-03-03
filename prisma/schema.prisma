@@ -1,13 +1,12 @@
-// 武汉生活 - 数据库模型
+// 武汉生活 - 数据库模型（SQLite兼容）
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 // 区域表
@@ -33,7 +32,7 @@ model Market {
   tips        String?   // 实用贴士
   latitude    Float?
   longitude   Float?
-  images      String[]  // 图片URL数组
+  images      String    // JSON字符串存储数组
   rating      Float     @default(0)
   viewCount   Int       @default(0)
   isActive    Boolean   @default(true)
@@ -55,8 +54,8 @@ model Food {
   shopName    String?   // 店铺/摊位名称
   price       String?   // 价格范围，如 "10-20元"
   description String?
-  tags        String[]  // 辣、甜、性价比高等
-  images      String[]
+  tags        String    // JSON字符串存储数组
+  images      String    // JSON字符串存储数组
   rating      Float     @default(0)
   recommend   Int       @default(0) // 推荐指数
   reviews     Review[]
@@ -69,27 +68,27 @@ model Food {
 
 // 跑山路线表
 model Route {
-  id          Int       @id @default(autoincrement())
-  name        String
-  direction   String    // 东南西北
-  distance    Int       // 里程（公里）
-  duration    String    // 预计时长，如 "3-4小时"
-  difficulty  Int       @default(1) // 1-5 难度等级
-  description String
-  roadCondition String? // 路况说明
-  bestSeason  String?   // 最佳季节
-  tips        String?   // 出行建议
-  startpoint  String    // 起点
-  endpoint    String    // 终点
-  coordinates String?   // 轨迹坐标 JSON
-  images      String[]
-  rating      Float     @default(0)
-  viewCount   Int       @default(0)
-  isActive    Boolean   @default(true)
-  waypoints   Waypoint[]
-  reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id            Int        @id @default(autoincrement())
+  name          String
+  direction     String     // 东南西北
+  distance      Int        // 里程（公里）
+  duration      String     // 预计时长，如 "3-4小时"
+  difficulty    Int        @default(1) // 1-5 难度等级
+  description   String
+  roadCondition String?   // 路况说明
+  bestSeason    String?   // 最佳季节
+  tips          String?   // 出行建议
+  startpoint    String    // 起点
+  endpoint      String    // 终点
+  coordinates   String?   // 轨迹坐标 JSON
+  images        String    // JSON字符串存储数组
+  rating        Float     @default(0)
+  viewCount     Int       @default(0)
+  isActive      Boolean   @default(true)
+  waypoints     Waypoint[]
+  reviews       Review[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@index([direction])
   @@index([difficulty])
@@ -123,7 +122,7 @@ model Review {
   route       Route?   @relation(fields: [targetId], references: [id], onDelete: Cascade)
   rating      Int      // 1-5
   content     String?
-  images      String[]
+  images      String   // JSON字符串存储数组
   likes       Int      @default(0)
   isAnonymous Boolean  @default(false)
   createdAt   DateTime @default(now())
@@ -135,14 +134,13 @@ model Review {
 
 // 用户表
 model User {
-  id           String    @id // 微信 openid
+  id           String     @id // 微信 openid
   nickname     String?
   avatar       String?
   phone        String?
   favorites    Favorite[]
-  reviews      Review[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 // 收藏表
