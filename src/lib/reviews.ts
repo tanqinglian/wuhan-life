@@ -21,7 +21,7 @@ export async function createReview(data: CreateReviewData) {
       targetId: data.targetId,
       rating: data.rating,
       content: data.content,
-      images: data.images || [],
+      images: JSON.stringify(data.images || []),
       isAnonymous: data.isAnonymous || false,
     },
   });
