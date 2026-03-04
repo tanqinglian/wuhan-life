@@ -1,46 +1,45 @@
-// 武汉生活 - 数据库模型（PostgreSQL）
+// 武汉生活 - 数据库模型（MySQL）
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 // 区域表
 model District {
   id        Int      @id @default(autoincrement())
-  name      String   @unique // 江汉区、武昌区等
+  name      String   @unique @db.VarChar(50) // 江汉区、武昌区等
   order     Int      @default(0)
   markets   Market[]
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @db.DateTime()
 }
 
 // 夜市表
 model Market {
   id          Int       @id @default(autoincrement())
-  name        String
+  name        String    @db.VarChar(100)
   districtId  Int
   district    District  @relation(fields: [districtId], references: [id], onDelete: Cascade)
-  address     String
-  description String?
-  openHours   String?   // 营业时间，如 "18:00-02:00"
-  bestTime    String?   // 最佳时间
-  traffic     String?   // 交通指南
-  tips        String?   // 实用贴士
-  latitude    Float?
-  longitude   Float?
-  images      String    // JSON字符串存储数组
+  address     String    @db.VarChar(200)
+  description String?   @db.Text
+  openHours   String?   @db.VarChar(50) // 营业时间，如 "18:00-02:00"
+  bestTime    String?   @db.VarChar(50) // 最佳时间
+  traffic     String?   @db.VarChar(200) // 交通指南
+  tips        String?   @db.Text // 实用贴士
+  latitude    Float? // 纬度
+  longitude   Float? // 经度
+  images      String    @db.Text // JSON字符串存储数组
   rating      Float     @default(0)
   viewCount   Int       @default(0)
   isActive    Boolean   @default(true)
   foods       Food[]
   reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now()) @db.DateTime()
+  updatedAt   DateTime  @updatedAt @db.DateTime()
 
   @@index([districtId])
   @@index([rating])
@@ -49,19 +48,19 @@ model Market {
 // 小吃表
 model Food {
   id          Int       @id @default(autoincrement())
-  name        String
+  name        String    @db.VarChar(100)
   marketId    Int
   market      Market    @relation(fields: [marketId], references: [id], onDelete: Cascade)
-  shopName    String?   // 店铺/摊位名称
-  price       String?   // 价格范围，如 "10-20元"
-  description String?
-  tags        String    // JSON字符串存储数组
-  images      String    // JSON字符串存储数组
+  shopName    String?   @db.VarChar(100) // 店铺/摊位名称
+  price       String?   @db.VarChar(50) // 价格范围，如 "10-20元"
+  description String?   @db.Text
+  tags        String    @db.Text // JSON字符串存储数组
+  images      String    @db.Text // JSON字符串存储数组
   rating      Float     @default(0)
   recommend   Int       @default(0) // 推荐指数
   reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now()) @db.DateTime()
+  updatedAt   DateTime  @updatedAt @db.DateTime()
 
   @@index([marketId])
   @@index([rating])
@@ -70,26 +69,26 @@ model Food {
 // 跑山路线表
 model Route {
   id            Int        @id @default(autoincrement())
-  name          String
-  direction     String     // 东南西北
-  distance      Int        // 里程（公里）
-  duration      String     // 预计时长，如 "3-4小时"
+  name          String     @db.VarChar(100)
+  direction     String     @db.VarChar(20) // 东南西北
+  distance      Int // 里程（公里）
+  duration      String     @db.VarChar(50) // 预计时长，如 "3-4小时"
   difficulty    Int        @default(1) // 1-5 难度等级
-  description   String
-  roadCondition String?   // 路况说明
-  bestSeason    String?   // 最佳季节
-  tips          String?   // 出行建议
-  startpoint    String    // 起点
-  endpoint      String    // 终点
-  coordinates   String?   // 轨迹坐标 JSON
-  images        String    // JSON字符串存储数组
-  rating        Float     @default(0)
-  viewCount     Int       @default(0)
-  isActive      Boolean   @default(true)
+  description   String     @db.Text
+  roadCondition String?    @db.Text // 路况说明
+  bestSeason    String?    @db.VarChar(100) // 最佳季节
+  tips          String?    @db.Text // 出行建议
+  startpoint    String     @db.VarChar(200) // 起点
+  endpoint      String     @db.VarChar(200) // 终点
+  coordinates   String?    @db.Text // 轨迹坐标 JSON
+  images        String     @db.Text // JSON字符串存储数组
+  rating        Float      @default(0)
+  viewCount     Int        @default(0)
+  isActive      Boolean    @default(true)
   waypoints     Waypoint[]
   reviews       Review[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now()) @db.DateTime()
+  updatedAt     DateTime   @updatedAt @db.DateTime()
 
   @@index([direction])
   @@index([difficulty])
@@ -101,13 +100,13 @@ model Waypoint {
   id          Int      @id @default(autoincrement())
   routeId     Int
   route       Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
   latitude    Float?
   longitude   Float?
   order       Int      @default(0)
   isHighlight Boolean  @default(false) // 是否为推荐打卡点
-  createdAt   DateTime @default(now())
+  createdAt   DateTime @default(now()) @db.DateTime()
 
   @@index([routeId])
 }
@@ -115,19 +114,19 @@ model Waypoint {
 // 评价表（通用）
 model Review {
   id          Int      @id @default(autoincrement())
-  userId      String   // 暂用微信 openid
-  targetType  String   // "market" | "food" | "route"
+  userId      String   @db.VarChar(100) // 暂用微信 openid
+  targetType  String   @db.VarChar(20) // "market" | "food" | "route"
   targetId    Int
   market      Market?  @relation(fields: [targetId], references: [id], onDelete: Cascade)
   food        Food?    @relation(fields: [targetId], references: [id], onDelete: Cascade)
   route       Route?   @relation(fields: [targetId], references: [id], onDelete: Cascade)
-  rating      Int      // 1-5
-  content     String?
-  images      String   // JSON字符串存储数组
+  rating      Int // 1-5
+  content     String?  @db.Text
+  images      String   @db.Text // JSON字符串存储数组
   likes       Int      @default(0)
   isAnonymous Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @db.DateTime()
+  updatedAt   DateTime @updatedAt @db.DateTime()
 
   @@index([targetType, targetId])
   @@index([userId])
@@ -135,23 +134,23 @@ model Review {
 
 // 用户表
 model User {
-  id           String     @id // 微信 openid
-  nickname     String?
-  avatar       String?
-  phone        String?
+  id           String     @id @db.VarChar(100) // 微信 openid
+  nickname     String?    @db.VarChar(100)
+  avatar       String?    @db.VarChar(200)
+  phone        String?    @db.VarChar(20)
   favorites    Favorite[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime   @default(now()) @db.DateTime()
+  updatedAt    DateTime   @updatedAt @db.DateTime()
 }
 
 // 收藏表
 model Favorite {
   id         Int      @id @default(autoincrement())
-  userId     String
+  userId     String   @db.VarChar(100)
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  targetType String   // "market" | "food" | "route"
+  targetType String   @db.VarChar(20) // "market" | "food" | "route"
   targetId   Int
-  createdAt  DateTime @default(now())
+  createdAt  DateTime @default(now()) @db.DateTime()
 
   @@unique([userId, targetType, targetId])
   @@index([userId])
