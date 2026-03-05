@@ -6,8 +6,23 @@ export default async function MarketDetailPage({
 }: {
   params: { id: string };
 }) {
+  // 参数验证
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500 text-lg">无效的夜市ID</p>
+          <Link href="/markets" className="text-orange-500 hover:underline mt-2 inline-block">
+            返回列表
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const market = await prisma.market.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id },
     include: {
       district: true,
       foods: {
