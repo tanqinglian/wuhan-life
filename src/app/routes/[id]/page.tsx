@@ -6,8 +6,23 @@ export default async function RouteDetailPage({
 }: {
   params: { id: string };
 }) {
+  // 参数验证
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500 text-lg">无效的跑山路线ID</p>
+          <Link href="/routes" className="text-green-500 hover:underline mt-2 inline-block">
+            返回列表
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const route = await prisma.route.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id },
     include: {
       waypoints: {
         orderBy: { order: "asc" },
