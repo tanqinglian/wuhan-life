@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const sortBy = searchParams.get('sortBy') || 'rating';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const minRating = searchParams.get('minRating');
+    const maxRating = searchParams.get('maxRating');
 
     const skip = (page - 1) * limit;
 
@@ -21,6 +23,13 @@ export async function GET(request: NextRequest) {
         { address: { contains: query } },
         { description: { contains: query } },
       ];
+    }
+
+    // 评分范围筛选
+    if (minRating || maxRating) {
+      where.rating = {};
+      if (minRating) where.rating.gte = parseFloat(minRating);
+      if (maxRating) where.rating.lte = parseFloat(maxRating);
     }
 
     // 构建排序
