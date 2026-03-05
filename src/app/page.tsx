@@ -26,6 +26,12 @@ export default function Home() {
             >
               🏔️ 跑山路线
             </Link>
+            <Link
+              href="/search"
+              className="px-6 py-3 bg-orange-700 text-white rounded-full font-medium hover:bg-orange-800 transition-colors"
+            >
+              🔍 搜索
+            </Link>
           </div>
         </div>
       </section>
