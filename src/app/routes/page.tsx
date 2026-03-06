@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db"
 
 export default async function RoutesPage() {
   // 直接查询跑山路线数据
-  const routes = await prisma.route.findMany({
+  const routes = await prisma.routes.findMany({
     orderBy: { rating: 'desc' },
     take: 20
   })

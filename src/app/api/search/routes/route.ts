@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     // 查询数据
     const [routes, total] = await Promise.all([
-      prisma.route.findMany({
+      prisma.routes.findMany({
         where,
         skip,
         take: limit,
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      prisma.route.count({ where })
+      prisma.routes.count({ where })
     ]);
 
     return NextResponse.json({

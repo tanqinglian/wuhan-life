@@ -21,10 +21,10 @@ export default async function MarketDetailPage({
     );
   }
 
-  const market = await prisma.market.findUnique({
+  const market = await prisma.markets.findUnique({
     where: { id },
     include: {
-      district: true,
+      districts: true,
       foods: {
         orderBy: { rating: "desc" },
         take: 10,

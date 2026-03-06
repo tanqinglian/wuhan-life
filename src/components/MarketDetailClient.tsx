@@ -2,6 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// 动态导入地图组件（避免SSR问题）
+const MapView = dynamic(() => import('./MapView'), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[300px] bg-gray-100 rounded-lg flex items-center justify-center">
+      <span className="text-gray-400">加载地图中...</span>
+    </div>
+  )
+});
 
 interface Market {
   id: number;
@@ -196,15 +207,22 @@ export default function MarketDetailClient({ market }: MarketDetailClientProps) 
             </div>
 
             {/* 位置信息 */}
-            {market.latitude && market.longitude && (
-              <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="font-bold text-gray-900 mb-3">位置</h3>
-                <p className="text-sm text-gray-600">{market.address}</p>
-                <p className="text-xs text-gray-400 mt-2">
-                  {market.district.name}
-                </p>
-              </div>
-            )}
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-3">位置</h3>
+              <p className="text-sm text-gray-600 mb-3">{market.address}</p>
+              <p className="text-xs text-gray-400 mb-4">
+                {market.district.name}
+              </p>
+              {/* 地图 */}
+              {market.latitude && market.longitude && (
+                <MapView 
+                  latitude={market.latitude} 
+                  longitude={market.longitude} 
+                  name={market.name}
+                  address={market.address}
+                />
+              )}
+            </div>
 
             {/* 操作按钮 */}
             <div className="bg-white rounded-lg p-6 shadow-sm">

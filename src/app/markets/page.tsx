@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db"
 
 export default async function MarketsPage() {
   // 直接查询夜市数据
-  const markets = await prisma.market.findMany({
+  const markets = await prisma.markets.findMany({
     orderBy: { rating: 'desc' },
     take: 20
   })

@@ -38,19 +38,19 @@ export async function GET(request: NextRequest) {
 
     // 查询数据
     const [markets, total] = await Promise.all([
-      prisma.market.findMany({
+      prisma.markets.findMany({
         where,
         skip,
         take: limit,
         orderBy,
         include: {
-          district: true,
+          districts: true,
           _count: {
             select: { foods: true, reviews: true }
           }
         }
       }),
-      prisma.market.count({ where })
+      prisma.markets.count({ where })
     ]);
 
     return NextResponse.json({
