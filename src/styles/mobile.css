@@ -1,0 +1,129 @@
+// 移动端优化样式
+// 创建时间：2026-03-07 22:56
+
+/* 移动端基础优化 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 触摸反馈 */
+.touchable {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.touchable:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 移动端按钮优化 */
+.mobileButton {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* 移动端滚动优化 */
+.smoothScroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 移动端输入优化 */
+.mobileInput {
+  font-size: 16px; /* 防止iOS缩放 */
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* 移动端图片优化 */
+.mobileImage {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 移动端布局优化 */
+.mobileContainer {
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 响应式断点 */
+@media (max-width: 767px) {
+  .hideMobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .showMobile {
+    display: none !important;
+  }
+}
+
+/* 移动端字体优化 */
+@media (max-width: 767px) {
+  html {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* 移动端卡片优化 */
+@media (max-width: 767px) {
+  .mobileCard {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .mobileCard:active {
+    transform: scale(0.98);
+  }
+}
+
+/* 移动端网格优化 */
+@media (max-width: 767px) {
+  .mobileGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* 安全区域适配（刘海屏） */
+@supports (padding: max(0px)) {
+  .safeArea {
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+}
