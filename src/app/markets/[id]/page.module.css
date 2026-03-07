@@ -1,0 +1,223 @@
+.container {
+  min-height: 100vh;
+  background: #f7f7f7;
+}
+
+.headerImage {
+  height: 300px;
+  background: linear-gradient(135deg, #FFD93D 0%, #FF6B35 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder {
+  font-size: 6rem;
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px 20px;
+  border-radius: 25px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  background: white;
+  transform: translateX(-4px);
+}
+
+.backButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.content {
+  max-width: 900px;
+  margin: -40px auto 40px;
+  padding: 0 20px;
+  position: relative;
+}
+
+.titleSection {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.meta {
+  display: flex;
+  gap: 20px;
+  font-size: 0.95rem;
+}
+
+.rating {
+  color: #FFD93D;
+  font-weight: 600;
+}
+
+.views {
+  color: #999;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.infoCard {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.infoIcon {
+  font-size: 2rem;
+}
+
+.infoContent {
+  flex: 1;
+}
+
+.infoLabel {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.infoValue {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.section {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #666;
+}
+
+.tips {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #666;
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+}
+
+.foodsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.foodCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f7f7f7;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.foodCard:hover {
+  background: #f0f0f0;
+  transform: translateX(4px);
+}
+
+.foodEmoji {
+  font-size: 2rem;
+}
+
+.foodInfo {
+  flex: 1;
+}
+
+.foodName {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.foodMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.mapPlaceholder {
+  height: 300px;
+  background: #f0f0f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .headerImage {
+    height: 200px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
