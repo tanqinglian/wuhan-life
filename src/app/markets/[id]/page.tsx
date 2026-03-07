@@ -8,10 +8,11 @@ export const dynamic = 'force-dynamic';
 export default async function MarketDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const market = await prisma.markets.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     include: {
       districts: true,
       foods: {
