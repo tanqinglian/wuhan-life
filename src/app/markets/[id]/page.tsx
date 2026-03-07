@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { LeafletMap } from '@/components/LeafletMap';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -120,12 +121,15 @@ export default async function MarketDetailPage({
           </div>
         )}
 
-        {/* Map Placeholder */}
+        {/* Map */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>位置地图</h2>
-          <div className={styles.mapPlaceholder}>
-            <span>🗺️ 地图功能开发中...</span>
-          </div>
+          <LeafletMap
+            latitude={market.latitude || 30.5931}
+            longitude={market.longitude || 114.3055}
+            title={market.name}
+            address={market.address || undefined}
+          />
         </div>
       </div>
     </div>
