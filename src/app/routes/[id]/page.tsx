@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import RouteDetailClient from "@/components/RouteDetailClient";
 
