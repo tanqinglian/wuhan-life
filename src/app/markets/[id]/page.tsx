@@ -4,10 +4,11 @@ import MarketDetailClient from "@/components/MarketDetailClient";
 export default async function MarketDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   // 参数验证
-  const id = parseInt(params.id);
+  const { id: idStr } = await params;
+  const id = parseInt(idStr);
   if (isNaN(id)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -29,10 +30,6 @@ export default async function MarketDetailPage({
         orderBy: { rating: "desc" },
         take: 10,
       },
-      reviews: {
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      },
     },
   });
 
@@ -52,10 +49,7 @@ export default async function MarketDetailPage({
   // 转换Date对象为普通对象
   const marketData = {
     ...market,
-    reviews: market.reviews.map(r => ({
-      ...r,
-      createdAt: r.createdAt
-    }))
+    reviews: [] // reviews 通过 targetType/targetId 关联，不是 Prisma 关系
   };
 
   return <MarketDetailClient market={marketData} />;

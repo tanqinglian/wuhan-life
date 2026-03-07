@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         include: {
           districts: true,
           _count: {
-            select: { foods: true, reviews: true }
+            select: { foods: true }
           }
         }
       }),

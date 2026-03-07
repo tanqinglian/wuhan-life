@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
         orderBy,
         include: {
           _count: {
-            select: { waypoints: true, reviews: true }
+            select: { waypoints: true }
           }
         }
       }),

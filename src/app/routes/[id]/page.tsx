@@ -4,10 +4,11 @@ import RouteDetailClient from "@/components/RouteDetailClient";
 export default async function RouteDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   // 参数验证
-  const id = parseInt(params.id);
+  const { id: idStr } = await params;
+  const id = parseInt(idStr);
   if (isNaN(id)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -23,10 +24,6 @@ export default async function RouteDetailPage({
     include: {
       waypoints: {
         orderBy: { order: "asc" },
-      },
-      reviews: {
-        orderBy: { createdAt: "desc" },
-        take: 5,
       },
     },
   });
@@ -44,10 +41,7 @@ export default async function RouteDetailPage({
   // 转换数据
   const routeData = {
     ...route,
-    reviews: route.reviews.map(r => ({
-      ...r,
-      createdAt: r.createdAt
-    }))
+    reviews: [] // reviews 通过 targetType/targetId 关联，不是 Prisma 关系
   };
 
   return <RouteDetailClient route={routeData} />;
