@@ -69,6 +69,10 @@ model markets {
 
   @@index([districtId], map: "idx_district")
   @@index([rating], map: "idx_rating")
+  @@index([isActive], map: "idx_active")
+  @@index([viewCount], map: "idx_viewcount")
+  @@index([createdAt], map: "idx_created")
+  @@index([rating, isActive], map: "idx_rating_active")
 }
 
 model reviews {
@@ -111,8 +115,12 @@ model routes {
   waypoints     waypoints[]
 
   @@index([difficulty], map: "idx_difficulty")
-  @@index([direction], map: "idx_direction")
   @@index([rating], map: "idx_rating")
+  @@index([isActive], map: "idx_active")
+  @@index([viewCount], map: "idx_viewcount")
+  @@index([createdAt], map: "idx_created")
+  @@index([difficulty, rating], map: "idx_difficulty_rating")
+  @@index([rating, isActive], map: "idx_rating_active")
 }
 
 model users {
