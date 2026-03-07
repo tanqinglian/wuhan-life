@@ -1,74 +1,152 @@
-import Link from "next/link"
-import { prisma } from "@/lib/db"
+import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import styles from './page.module.css';
 
-export default async function MarketsPage() {
-  // 直接查询夜市数据
-  const markets = await prisma.markets.findMany({
-    orderBy: { rating: 'desc' },
-    take: 20
-  })
+export const dynamic = 'force-dynamic';
+
+export default async function MarketsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const page = Number(searchParams.page) || 1;
+  const limit = Number(searchParams.limit) || 10;
+  const search = typeof searchParams.q === 'string' ? searchParams.q : '';
+
+  const where = search
+    ? {
+        OR: [
+          { name: { contains: search } },
+          { address: { contains: search } },
+          { description: { contains: search } },
+        ],
+      }
+    : {};
+
+  const [markets, total] = await Promise.all([
+    prisma.markets.findMany({
+      where,
+      include: {
+        districts: true,
+        _count: { select: { foods: true } },
+      },
+      orderBy: { rating: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.markets.count({ where }),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
-          ← 返回首页
-        </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mt-2">
-          🍢 武汉夜市探索
-        </h1>
-      </div>
+    <div className={styles.container}>
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
+          <Link href="/" className={styles.backButton}>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            返回首页
+          </Link>
+          <h1 className={styles.title}>🌃 夜市探索</h1>
+          <p className={styles.subtitle}>发现武汉最地道的夜市美食</p>
+        </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex gap-2 overflow-x-auto">
-          <button className="px-4 py-2 bg-orange-500 text-white rounded-full text-sm font-medium whitespace-nowrap">
-            全部
-          </button>
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200">
-            江汉区
-          </button>
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium whitespace-nowrap hover:bg-gray-200">
-            武昌区
-          </button>
+      {/* Search & Filter Bar */}
+      <div className={styles.filterBar}>
+        <div className={styles.searchWrapper}>
+          <svg className={styles.searchIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="搜索夜市..."
+            className={styles.searchInput}
+            defaultValue={search}
+          />
+        </div>
+        <div className={styles.filterButtons}>
+          <button className={styles.filterButton}>评分 4.5+</button>
+          <button className={styles.filterButton}>江岸区</button>
+          <button className={styles.filterButton}>洪山区</button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {markets.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-500 text-lg">暂无夜市数据</p>
-            <p className="text-gray-400 text-sm mt-2">
-              请先配置数据库并添加数据
-            </p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {markets.map((market) => (
-              <Link
-                key={market.id}
-                href={`/markets/${market.id}`}
-                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="aspect-video bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
-                  <span className="text-4xl">🌃</span>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-gray-900 mb-1">{market.name}</h3>
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                    {market.description || '暂无描述'}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">{market.address}</span>
-                    <span className="text-sm font-medium text-orange-500">
-                      ⭐ {market.rating.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+      {/* Stats Bar */}
+      <div className={styles.statsBar}>
+        <span className={styles.statItem}>共 {total} 个夜市</span>
+        <span className={styles.statDivider}>|</span>
+        <span className={styles.statItem}>第 {page} / {totalPages} 页</span>
+      </div>
+
+      {/* Market Grid */}
+      <div className={styles.grid}>
+        {markets.map((market) => (
+          <Link
+            key={market.id}
+            href={`/markets/${market.id}`}
+            className={styles.card}
+          >
+            <div className={styles.cardImage}>
+              <div className={styles.cardPlaceholder}>🌃</div>
+              <div className={styles.cardBadge}>
+                ⭐ {market.rating?.toFixed(1) || '暂无'}
+              </div>
+            </div>
+            <div className={styles.cardContent}>
+              <h3 className={styles.cardTitle}>{market.name}</h3>
+              <div className={styles.cardInfo}>
+                <span className={styles.cardDistrict}>
+                  📍 {market.districts?.name || '未知'}
+                </span>
+                <span className={styles.cardFoods}>
+                  🍜 {market._count.foods} 种美食
+                </span>
+              </div>
+              <p className={styles.cardAddress}>{market.address}</p>
+              <div className={styles.cardMeta}>
+                <span className={styles.cardViews}>
+                  👁️ {market.viewCount || 0} 次浏览
+                </span>
+                <span className={styles.cardHours}>
+                  🕐 {market.openHours || '未知'}
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className={styles.pagination}>
+        {page > 1 && (
+          <Link
+            href={`/markets?page=${page - 1}&limit=${limit}${search ? `&q=${search}` : ''}`}
+            className={styles.pageButton}
+          >
+            ← 上一页
+          </Link>
+        )}
+        <span className={styles.pageInfo}>
+          {page} / {totalPages}
+        </span>
+        {page < totalPages && (
+          <Link
+            href={`/markets?page=${page + 1}&limit=${limit}${search ? `&q=${search}` : ''}`}
+            className={styles.pageButton}
+          >
+            下一页 →
+          </Link>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <p>© 2026 wuhan-life</p>
+      </footer>
     </div>
-  )
+  );
 }
