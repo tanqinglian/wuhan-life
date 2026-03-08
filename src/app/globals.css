@@ -1,32 +1,60 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Space+Grotesk:wght@400;500;600&display=swap');
 
 :root {
-  --font-inter: "Inter", system-ui, sans-serif;
+  /* 字体 */
+  --font-heading: "Rajdhani", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+  
+  /* 霓虹都市配色 */
+  --color-bg-primary: #0A0E27;
+  --color-bg-secondary: #141B3D;
+  --color-bg-tertiary: #1E2749;
+  
+  /* 霓虹色 */
+  --color-neon-cyan: #00F5FF;
+  --color-neon-magenta: #FF00E5;
+  --color-neon-yellow: #FFD700;
+  --color-neon-green: #00FF9F;
+  
+  /* 文字色 */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E0E7FF;
+  --color-text-tertiary: #94A3B8;
 }
 
 body {
-  font-family: var(--font-inter);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-secondary);
 }
 
-/* Custom scrollbar */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+}
+
+/* Custom scrollbar - 霓虹风格 */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: var(--color-neon-cyan);
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--color-neon-cyan);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--color-neon-magenta);
+  box-shadow: 0 0 15px var(--color-neon-magenta);
 }
 
 /* Line clamp */

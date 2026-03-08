@@ -1,6 +1,29 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 245, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255, 0, 229, 0.15) 0%, transparent 50%),
+    var(--color-bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 扫描线动画 */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-neon-cyan), transparent);
+  animation: scan 8s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
 }
 
 /* Hero Section */
@@ -16,18 +39,33 @@
 }
 
 .heroTitle {
+  font-family: var(--font-heading);
   font-size: 3.5rem;
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 20px;
   line-height: 1.2;
   animation: fadeInUp 0.8s ease-out;
+  text-shadow: 
+    0 0 10px var(--color-neon-cyan),
+    0 0 20px var(--color-neon-cyan),
+    0 0 30px var(--color-neon-cyan);
 }
 
 .highlight {
-  background: linear-gradient(135deg, #FFD93D 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, var(--color-neon-cyan) 0%, var(--color-neon-magenta) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: neon-flicker 3s infinite;
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    filter: brightness(1);
+  }
+  20%, 24%, 55% {
+    filter: brightness(0.8);
+  }
 }
 
 .heroSubtitle {
@@ -64,36 +102,45 @@
 .searchInput {
   width: 100%;
   padding: 16px 16px 16px 48px;
-  border: none;
+  border: 2px solid var(--color-neon-cyan);
   border-radius: 12px;
   font-size: 1rem;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  box-shadow: 
+    0 0 10px rgba(0, 245, 255, 0.3),
+    inset 0 0 10px rgba(0, 245, 255, 0.1);
   transition: all 0.3s ease;
 }
 
 .searchInput:focus {
   outline: none;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 0 20px rgba(0, 245, 255, 0.6),
+    inset 0 0 15px rgba(0, 245, 255, 0.2);
   transform: translateY(-2px);
 }
 
 .searchButton {
   padding: 16px 32px;
-  background: linear-gradient(135deg, #FF6B35 0%, #FFD93D 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-neon-cyan) 0%, var(--color-neon-magenta) 100%);
+  color: var(--color-bg-primary);
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+  box-shadow: 
+    0 0 15px rgba(0, 245, 255, 0.5),
+    0 0 30px rgba(255, 0, 229, 0.3);
 }
 
 .searchButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(255, 107, 53, 0.4);
+  box-shadow: 
+    0 0 25px rgba(0, 245, 255, 0.7),
+    0 0 50px rgba(255, 0, 229, 0.5);
 }
 
 /* Stats */
@@ -111,27 +158,32 @@
 }
 
 .statNumber {
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
+  color: var(--color-neon-cyan);
+  text-shadow: 0 0 10px var(--color-neon-cyan);
 }
 
 .statLabel {
   font-size: 0.9rem;
-  opacity: 0.9;
+  color: var(--color-text-secondary);
 }
 
 /* Features Section */
 .features {
   padding: 60px 20px;
-  background: #f7f7f7;
+  background: var(--color-bg-secondary);
 }
 
 .sectionTitle {
   text-align: center;
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 40px;
-  color: #333;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 10px var(--color-neon-cyan);
 }
 
 .featureGrid {
@@ -143,10 +195,13 @@
 }
 
 .featureCard {
-  background: white;
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-neon-cyan);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 0 10px rgba(0, 245, 255, 0.3),
+    inset 0 0 10px rgba(0, 245, 255, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
   text-decoration: none;
@@ -155,15 +210,31 @@
 
 .featureCard:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 0 20px rgba(0, 245, 255, 0.6),
+    0 0 40px rgba(0, 245, 255, 0.4),
+    inset 0 0 15px rgba(0, 245, 255, 0.2);
+  border-color: var(--color-neon-magenta);
 }
 
 .cardImage {
   height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-neon-cyan) 0%, var(--color-neon-magenta) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.cardImage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(90deg, transparent 50%, rgba(0, 0, 0, 0.1) 50%),
+    linear-gradient(0deg, transparent 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 20px 20px;
+  opacity: 0.3;
 }
 
 .cardPlaceholder {
@@ -175,15 +246,16 @@
 }
 
 .cardTitle {
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 12px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .cardDescription {
   font-size: 0.95rem;
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 16px;
 }
@@ -196,27 +268,29 @@
 
 .cardBadge {
   padding: 6px 12px;
-  background: #f0f0f0;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-neon-cyan);
   border-radius: 20px;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-neon-cyan);
 }
 
 .cardLink {
-  color: #FF6B35;
+  color: var(--color-neon-cyan);
   font-weight: 600;
   font-size: 0.9rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .featureCard:hover .cardLink {
-  color: #FFD93D;
+  color: var(--color-neon-magenta);
+  text-shadow: 0 0 10px var(--color-neon-magenta);
 }
 
 /* Popular Section */
 .popular {
   padding: 60px 20px;
-  background: white;
+  background: var(--color-bg-primary);
 }
 
 .popularGrid {
@@ -232,15 +306,20 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: #f7f7f7;
+  background: var(--color-bg-secondary);
+  border: 1px solid transparent;
   border-radius: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .popularItem:hover {
-  background: #f0f0f0;
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-neon-cyan);
   transform: translateX(8px);
+  box-shadow: 
+    -4px 0 10px rgba(0, 245, 255, 0.3),
+    0 0 20px rgba(0, 245, 255, 0.2);
 }
 
 .popularEmoji {
@@ -251,21 +330,23 @@
   flex: 1;
   font-size: 1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .popularRating {
   font-size: 0.9rem;
-  color: #FFD93D;
+  color: var(--color-neon-yellow);
   font-weight: 600;
+  text-shadow: 0 0 10px var(--color-neon-yellow);
 }
 
 /* Footer */
 .footer {
   padding: 40px 20px;
   text-align: center;
-  background: #333;
-  color: white;
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-neon-cyan);
+  color: var(--color-text-secondary);
 }
 
 .footerText {
