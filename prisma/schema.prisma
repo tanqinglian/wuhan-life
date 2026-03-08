@@ -67,12 +67,12 @@ model markets {
   foods       foods[]
   districts   districts? @relation(fields: [districtId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "markets_ibfk_1")
 
+  @@index([isActive], map: "idx_active")
+  @@index([createdAt], map: "idx_created")
   @@index([districtId], map: "idx_district")
   @@index([rating], map: "idx_rating")
-  @@index([isActive], map: "idx_active")
-  @@index([viewCount], map: "idx_viewcount")
-  @@index([createdAt], map: "idx_created")
   @@index([rating, isActive], map: "idx_rating_active")
+  @@index([viewCount], map: "idx_viewcount")
 }
 
 model reviews {
@@ -114,13 +114,13 @@ model routes {
   updatedAt     DateTime?   @default(now()) @db.DateTime(0)
   waypoints     waypoints[]
 
-  @@index([difficulty], map: "idx_difficulty")
-  @@index([rating], map: "idx_rating")
   @@index([isActive], map: "idx_active")
-  @@index([viewCount], map: "idx_viewcount")
   @@index([createdAt], map: "idx_created")
+  @@index([difficulty], map: "idx_difficulty")
   @@index([difficulty, rating], map: "idx_difficulty_rating")
+  @@index([rating], map: "idx_rating")
   @@index([rating, isActive], map: "idx_rating_active")
+  @@index([viewCount], map: "idx_viewcount")
 }
 
 model users {
