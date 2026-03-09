@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { LeafletMap } from '@/components/LeafletMap';
+import FavoriteButton from '@/components/FavoriteButton';
+import CommentSection from '@/components/CommentSection';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -49,6 +51,11 @@ export default async function MarketDetailPage({
             <span className={styles.rating}>⭐ {market.rating?.toFixed(1) || '暂无'}</span>
             <span className={styles.views}>👁️ {market.viewCount || 0} 次浏览</span>
           </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className={styles.actionButtons}>
+          <FavoriteButton type="market" id={market.id} name={market.name} />
         </div>
 
         {/* Info Cards */}
@@ -131,6 +138,9 @@ export default async function MarketDetailPage({
             address={market.address || undefined}
           />
         </div>
+
+        {/* Comments */}
+        <CommentSection targetType="market" targetId={market.id} />
       </div>
     </div>
   );

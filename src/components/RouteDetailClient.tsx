@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import FavoriteButton from './FavoriteButton';
 
 // 动态导入地图组件
 const MapView = dynamic(() => import('./MapView'), { 
@@ -256,9 +257,7 @@ export default function RouteDetailClient({ route }: RouteDetailClientProps) {
 
             {/* 操作按钮 */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <button className="w-full py-3 bg-emerald-500 text-white rounded-lg font-medium hover:bg-emerald-600 transition-colors">
-                添加到收藏
-              </button>
+              <FavoriteButton type="route" id={route.id} name={route.name} />
               <button className="w-full py-3 mt-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
                 写评价
               </button>

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function SearchPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
   const [type, setType] = useState<'markets' | 'routes'>('markets');
   const [results, setResults] = useState<any[]>([]);
@@ -13,13 +14,23 @@ export default function SearchPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const handleSearch = async (pageNum: number = 1) => {
-    if (!query.trim()) return;
+  // 从URL参数读取初始查询
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) {
+      setQuery(q);
+      // 自动执行搜索
+      handleSearchWithQuery(q, 1);
+    }
+  }, [searchParams]);
+
+  const handleSearchWithQuery = async (searchQuery: string, pageNum: number = 1) => {
+    if (!searchQuery.trim()) return;
 
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/search/${type}?q=${encodeURIComponent(query)}&page=${pageNum}&limit=10&sortBy=rating&sortOrder=desc`
+        `/api/search/${type}?q=${encodeURIComponent(searchQuery)}&page=${pageNum}&limit=10&sortBy=rating&sortOrder=desc`
       );
       const data = await res.json();
       
@@ -33,6 +44,10 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = async (pageNum: number = 1) => {
+    await handleSearchWithQuery(query, pageNum);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

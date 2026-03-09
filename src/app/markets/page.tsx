@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import MarketFilters from '@/components/MarketFilters';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -12,16 +13,39 @@ export default async function MarketsPage({
   const page = Number(searchParams.page) || 1;
   const limit = Number(searchParams.limit) || 10;
   const search = typeof searchParams.q === 'string' ? searchParams.q : '';
+  const ratingFilter = typeof searchParams.rating === 'string' ? searchParams.rating : '';
+  const districtFilter = typeof searchParams.district === 'string' ? searchParams.district : '';
 
-  const where = search
-    ? {
-        OR: [
-          { name: { contains: search } },
-          { address: { contains: search } },
-          { description: { contains: search } },
-        ],
-      }
-    : {};
+  // 获取所有区域
+  const allDistricts = await prisma.districts.findMany({
+    select: { name: true },
+    orderBy: { name: 'asc' }
+  });
+  const districtNames = allDistricts.map(d => d.name);
+
+  // 构建查询条件
+  const where: any = {};
+  
+  if (search) {
+    where.OR = [
+      { name: { contains: search } },
+      { address: { contains: search } },
+      { description: { contains: search } },
+    ];
+  }
+
+  if (ratingFilter) {
+    where.rating = { gte: parseFloat(ratingFilter) };
+  }
+
+  if (districtFilter) {
+    const district = await prisma.districts.findFirst({
+      where: { name: districtFilter }
+    });
+    if (district) {
+      where.districtId = district.id;
+    }
+  }
 
   const [markets, total] = await Promise.all([
     prisma.markets.findMany({
@@ -55,25 +79,12 @@ export default async function MarketsPage({
         </div>
       </header>
 
-      {/* Search & Filter Bar */}
-      <div className={styles.filterBar}>
-        <div className={styles.searchWrapper}>
-          <svg className={styles.searchIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="搜索夜市..."
-            className={styles.searchInput}
-            defaultValue={search}
-          />
-        </div>
-        <div className={styles.filterButtons}>
-          <button className={styles.filterButton}>评分 4.5+</button>
-          <button className={styles.filterButton}>江岸区</button>
-          <button className={styles.filterButton}>洪山区</button>
-        </div>
-      </div>
+      {/* Filter Bar */}
+      <MarketFilters 
+        currentRating={ratingFilter}
+        currentDistrict={districtFilter}
+        districts={districtNames}
+      />
 
       {/* Stats Bar */}
       <div className={styles.statsBar}>

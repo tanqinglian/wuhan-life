@@ -1,9 +1,29 @@
 import Link from "next/link"
 import { prisma } from "@/lib/db"
+import RouteFilters from "@/components/RouteFilters"
 
-export default async function RoutesPage() {
-  // 直接查询跑山路线数据
+export default async function RoutesPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const ratingFilter = typeof searchParams.rating === 'string' ? searchParams.rating : '';
+  const difficultyFilter = typeof searchParams.difficulty === 'string' ? searchParams.difficulty : '';
+
+  // 构建查询条件
+  const where: any = {};
+  
+  if (ratingFilter) {
+    where.rating = { gte: parseFloat(ratingFilter) };
+  }
+
+  if (difficultyFilter) {
+    where.difficulty = difficultyFilter;
+  }
+
+  // 查询跑山路线数据
   const routes = await prisma.routes.findMany({
+    where,
     orderBy: { rating: 'desc' },
     take: 20
   })
@@ -20,6 +40,14 @@ export default async function RoutesPage() {
         <p className="text-gray-600 mt-1">
           探索武汉周边最美的山路，享受驾驶乐趣
         </p>
+      </div>
+
+      {/* 筛选组件 */}
+      <div className="max-w-7xl mx-auto px-4">
+        <RouteFilters 
+          currentRating={ratingFilter}
+          currentDifficulty={difficultyFilter}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">

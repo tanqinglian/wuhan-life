@@ -208,6 +208,13 @@
   color: #999;
 }
 
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 768px) {
   .headerImage {
     height: 200px;

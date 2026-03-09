@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import SearchBox from '@/components/SearchBox';
+import PopularRecommendations from '@/components/PopularRecommendations';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -15,21 +17,7 @@ export default function Home() {
           </p>
           
           {/* Search Box */}
-          <div className={styles.searchBox}>
-            <div className={styles.searchInputWrapper}>
-              <svg className={styles.searchIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="搜索夜市、跑山路线..."
-                className={styles.searchInput}
-              />
-            </div>
-            <button className={styles.searchButton}>
-              搜索
-            </button>
-          </div>
+          <SearchBox />
 
           {/* Quick Stats */}
           <div className={styles.stats}>
@@ -97,23 +85,7 @@ export default function Home() {
       {/* Popular Section */}
       <section className={styles.popular}>
         <h2 className={styles.sectionTitle}>热门推荐</h2>
-        <div className={styles.popularGrid}>
-          <div className={styles.popularItem}>
-            <span className={styles.popularEmoji}>🍜</span>
-            <span className={styles.popularText}>户部巷夜市</span>
-            <span className={styles.popularRating}>⭐ 4.8</span>
-          </div>
-          <div className={styles.popularItem}>
-            <span className={styles.popularEmoji}>🚴</span>
-            <span className={styles.popularText}>东湖绿道</span>
-            <span className={styles.popularRating}>⭐ 4.7</span>
-          </div>
-          <div className={styles.popularItem}>
-            <span className={styles.popularEmoji}>🍢</span>
-            <span className={styles.popularText}>江汉路夜市</span>
-            <span className={styles.popularRating}>⭐ 4.6</span>
-          </div>
-        </div>
+        <PopularRecommendations />
       </section>
 
       {/* Footer */}
