@@ -1,0 +1,13 @@
+// Prisma schema - 使用SQLite本地开发
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 保持其他模型定义不变
+// ...

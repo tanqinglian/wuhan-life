@@ -1,159 +1,149 @@
-// 武汉生活 - 数据库模型
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// 区域表
-model District {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique // 江汉区、武昌区等
-  order     Int      @default(0)
-  markets   Market[]
-  createdAt DateTime @default(now())
+model districts {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique(map: "name") @db.VarChar(50)
+  order     Int?      @default(0)
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  markets   markets[]
 }
 
-// 夜市表
-model Market {
-  id          Int       @id @default(autoincrement())
-  name        String
-  districtId  Int
-  district    District  @relation(fields: [districtId], references: [id])
-  address     String
-  description String?
-  openHours   String?   // 营业时间，如 "18:00-02:00"
-  bestTime    String?   // 最佳时间
-  traffic     String?   // 交通指南
-  tips        String?   // 实用贴士
-  latitude    Float?
-  longitude   Float?
-  images      String[]  // 图片URL数组
-  rating      Float     @default(0)
-  viewCount   Int       @default(0)
-  isActive    Boolean   @default(true)
-  foods       Food[]
-  reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([districtId])
-  @@index([rating])
-}
-
-// 小吃表
-model Food {
-  id          Int       @id @default(autoincrement())
-  name        String
-  marketId    Int
-  market      Market    @relation(fields: [marketId], references: [id], onDelete: Cascade)
-  shopName    String?   // 店铺/摊位名称
-  price       String?   // 价格范围，如 "10-20元"
-  description String?
-  tags        String[]  // 辣、甜、性价比高等
-  images      String[]
-  rating      Float     @default(0)
-  recommend   Int       @default(0) // 推荐指数
-  reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([marketId])
-  @@index([rating])
-}
-
-// 跑山路线表
-model Route {
-  id          Int       @id @default(autoincrement())
-  name        String
-  direction   String    // 东南西北
-  distance    Int       // 里程（公里）
-  duration    String    // 预计时长，如 "3-4小时"
-  difficulty  Int       @default(1) // 1-5 难度等级
-  description String
-  roadCondition String? // 路况说明
-  bestSeason  String?   // 最佳季节
-  tips        String?   // 出行建议
-  startpoint  String    // 起点
-  endpoint    String    // 终点
-  coordinates String?   // 轨迹坐标 JSON
-  images      String[]
-  rating      Float     @default(0)
-  viewCount   Int       @default(0)
-  isActive    Boolean   @default(true)
-  waypoints   Waypoint[]
-  reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([direction])
-  @@index([difficulty])
-  @@index([rating])
-}
-
-// 途经点表
-model Waypoint {
-  id          Int      @id @default(autoincrement())
-  routeId     Int
-  route       Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  latitude    Float?
-  longitude   Float?
-  order       Int      @default(0)
-  isHighlight Boolean  @default(false) // 是否为推荐打卡点
-  createdAt   DateTime @default(now())
-
-  @@index([routeId])
-}
-
-// 评价表（通用）
-model Review {
-  id          Int      @id @default(autoincrement())
-  userId      String   // 暂用微信 openid
-  targetType  String   // "market" | "food" | "route"
-  targetId    Int
-  market      Market?  @relation(fields: [targetId], references: [id], onDelete: Cascade)
-  food        Food?    @relation(fields: [targetId], references: [id], onDelete: Cascade)
-  route       Route?   @relation(fields: [targetId], references: [id], onDelete: Cascade)
-  rating      Int      // 1-5
-  content     String?
-  images      String[]
-  likes       Int      @default(0)
-  isAnonymous Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([targetType, targetId])
-  @@index([userId])
-}
-
-// 用户表
-model User {
-  id           String    @id // 微信 openid
-  nickname     String?
-  avatar       String?
-  phone        String?
-  favorites    Favorite[]
-  reviews      Review[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-}
-
-// 收藏表
-model Favorite {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  targetType String   // "market" | "food" | "route"
+model favorites {
+  id         Int       @id @default(autoincrement())
+  userId     String    @db.VarChar(100)
+  targetType String    @db.VarChar(20)
   targetId   Int
-  createdAt  DateTime @default(now())
+  createdAt  DateTime? @default(now()) @db.DateTime(0)
+  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "favorites_ibfk_1")
 
-  @@unique([userId, targetType, targetId])
-  @@index([userId])
+  @@unique([userId, targetType, targetId], map: "unique_favorite")
+  @@index([userId], map: "idx_user")
+}
+
+model foods {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  marketId    Int
+  shopName    String?   @db.VarChar(100)
+  price       String?   @db.VarChar(50)
+  description String?   @db.Text
+  tags        String?   @db.Text
+  images      String?   @db.Text
+  rating      Float?    @default(0) @db.Float
+  recommend   Int?      @default(0)
+  createdAt   DateTime? @default(now()) @db.DateTime(0)
+  updatedAt   DateTime? @default(now()) @db.DateTime(0)
+  markets     markets   @relation(fields: [marketId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "foods_ibfk_1")
+
+  @@index([marketId], map: "idx_market")
+  @@index([rating], map: "idx_rating")
+}
+
+model markets {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(100)
+  districtId  Int?
+  address     String?    @db.VarChar(200)
+  description String?    @db.Text
+  openHours   String?    @db.VarChar(50)
+  bestTime    String?    @db.VarChar(50)
+  traffic     String?    @db.VarChar(200)
+  tips        String?    @db.Text
+  latitude    Float?     @db.Float
+  longitude   Float?     @db.Float
+  images      String?    @db.Text
+  rating      Float?     @default(0) @db.Float
+  viewCount   Int?       @default(0)
+  isActive    Boolean?   @default(true)
+  createdAt   DateTime?  @default(now()) @db.DateTime(0)
+  updatedAt   DateTime?  @default(now()) @db.DateTime(0)
+  foods       foods[]
+  districts   districts? @relation(fields: [districtId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "markets_ibfk_1")
+
+  @@index([isActive], map: "idx_active")
+  @@index([createdAt], map: "idx_created")
+  @@index([districtId], map: "idx_district")
+  @@index([rating], map: "idx_rating")
+  @@index([rating, isActive], map: "idx_rating_active")
+  @@index([viewCount], map: "idx_viewcount")
+}
+
+model reviews {
+  id          Int       @id @default(autoincrement())
+  userId      String    @db.VarChar(100)
+  targetType  String    @db.VarChar(20)
+  targetId    Int
+  rating      Int
+  content     String?   @db.Text
+  images      String?   @db.Text
+  likes       Int?      @default(0)
+  isAnonymous Boolean?  @default(false)
+  createdAt   DateTime? @default(now()) @db.DateTime(0)
+  updatedAt   DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([targetType, targetId], map: "idx_target")
+  @@index([userId], map: "idx_user")
+}
+
+model routes {
+  id            Int         @id @default(autoincrement())
+  name          String      @db.VarChar(100)
+  direction     String?     @db.VarChar(20)
+  distance      Int?
+  duration      String?     @db.VarChar(50)
+  difficulty    Int?        @default(1)
+  description   String?     @db.Text
+  roadCondition String?     @db.Text
+  bestSeason    String?     @db.VarChar(100)
+  tips          String?     @db.Text
+  startpoint    String?     @db.VarChar(200)
+  endpoint      String?     @db.VarChar(200)
+  coordinates   String?     @db.Text
+  images        String?     @db.Text
+  rating        Float?      @default(0) @db.Float
+  viewCount     Int?        @default(0)
+  isActive      Boolean?    @default(true)
+  createdAt     DateTime?   @default(now()) @db.DateTime(0)
+  updatedAt     DateTime?   @default(now()) @db.DateTime(0)
+  waypoints     waypoints[]
+
+  @@index([isActive], map: "idx_active")
+  @@index([createdAt], map: "idx_created")
+  @@index([difficulty], map: "idx_difficulty")
+  @@index([difficulty, rating], map: "idx_difficulty_rating")
+  @@index([rating], map: "idx_rating")
+  @@index([rating, isActive], map: "idx_rating_active")
+  @@index([viewCount], map: "idx_viewcount")
+}
+
+model users {
+  id        String      @id @db.VarChar(100)
+  nickname  String?     @db.VarChar(100)
+  avatar    String?     @db.VarChar(200)
+  phone     String?     @db.VarChar(20)
+  createdAt DateTime?   @default(now()) @db.DateTime(0)
+  updatedAt DateTime?   @default(now()) @db.DateTime(0)
+  favorites favorites[]
+}
+
+model waypoints {
+  id          Int       @id @default(autoincrement())
+  routeId     Int
+  name        String    @db.VarChar(100)
+  description String?   @db.Text
+  latitude    Float?    @db.Float
+  longitude   Float?    @db.Float
+  order       Int?      @default(0)
+  isHighlight Boolean?  @default(false)
+  createdAt   DateTime? @default(now()) @db.DateTime(0)
+  routes      routes    @relation(fields: [routeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "waypoints_ibfk_1")
+
+  @@index([routeId], map: "idx_route")
 }

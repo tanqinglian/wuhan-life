@@ -1,0 +1,54 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - heading "武汉生活" [level=1] [ref=e6]
+      - paragraph [ref=e7]: 发现武汉夜市的烟火气，探索周边跑山的自由感
+      - generic [ref=e8]:
+        - link "🍢 探索夜市" [ref=e9] [cursor=pointer]:
+          - /url: /markets
+        - link "🏔️ 跑山路线" [ref=e10] [cursor=pointer]:
+          - /url: /routes
+    - generic [ref=e12]:
+      - link "🌃 夜市探索 收录武汉所有夜市，发现地道小吃，查看真实评价 开始探索 → 🍡" [ref=e13] [cursor=pointer]:
+        - /url: /markets
+        - generic [ref=e14]:
+          - generic [ref=e15]: 🌃
+          - heading "夜市探索" [level=2] [ref=e16]
+          - paragraph [ref=e17]: 收录武汉所有夜市，发现地道小吃，查看真实评价
+          - generic [ref=e18]: 开始探索 →
+        - generic [ref=e19]: 🍡
+      - link "🏔️ 跑山路线 精选武汉周边一日游路线，周末出行不迷路 查看路线 → 🗺️" [ref=e20] [cursor=pointer]:
+        - /url: /routes
+        - generic [ref=e21]:
+          - generic [ref=e22]: 🏔️
+          - heading "跑山路线" [level=2] [ref=e23]
+          - paragraph [ref=e24]: 精选武汉周边一日游路线，周末出行不迷路
+          - generic [ref=e25]: 查看路线 →
+        - generic [ref=e26]: 🗺️
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]: 50+
+        - generic [ref=e32]: 夜市收录
+      - generic [ref=e33]:
+        - generic [ref=e34]: 200+
+        - generic [ref=e35]: 小吃推荐
+      - generic [ref=e36]:
+        - generic [ref=e37]: 20+
+        - generic [ref=e38]: 跑山路线
+      - generic [ref=e39]:
+        - generic [ref=e40]: 1000+
+        - generic [ref=e41]: 用户评价
+    - generic [ref=e42]:
+      - heading "准备好探索武汉了吗？" [level=2] [ref=e43]
+      - paragraph [ref=e44]: 今晚去哪个夜市？周末跑哪座山？让我们帮你决定
+      - link "开始探索 →" [ref=e45] [cursor=pointer]:
+        - /url: /markets
+        - text: 开始探索
+        - generic [ref=e46]: →
+  - button "Open Next.js Dev Tools" [ref=e52] [cursor=pointer]:
+    - img [ref=e53]
+  - alert [ref=e58]
+```
